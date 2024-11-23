@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import Image from 'next/image'
 import Link from 'next/link'
-import { createAccount } from '@/lib/action/user.actions'
+import { createAccount, signInUser } from '@/lib/action/user.actions'
 import OTPModal from './OTPModal'
 
 const formSchema = z.object({
@@ -60,10 +60,13 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
         try {
 
-            const user = await createAccount({
-                fullName: values.fullName ?? '',
-                email: values.email
-            })
+            const user =
+                type === 'sign-up' ? await createAccount({
+                    fullName: values.fullName ?? '',
+                    email: values.email
+                }) : await signInUser({
+                    email: values.email
+                })
             console.log(values)
 
             setAccountId(user.accountId)
@@ -95,7 +98,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                         )}
                     />}
 
-                    {type === 'sign-up' && <FormField
+                    <FormField
                         control={form.control}
                         name="email"
                         render={({ field }) => (
@@ -109,8 +112,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                                 </div>
                             </FormItem>
                         )}
-                    />}
-
+                    />
 
                     <Button type="submit" className='form-submit-button'>{type === 'sign-in' ? 'Sign In' : 'Sign Up'}{isLoading && (<Image src="/assets/icons/loader.svg" alt="loader" width={24} height={24} className="ml-2 animate-spin" />)}</Button>
 
@@ -126,7 +128,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
             </Form>
             {/* OTP verification */}
 
-            {accountId && <OTPModal email={form.getValues('email')} accountId={accountId}/>}
+            {accountId && <OTPModal email={form.getValues('email')} accountId={accountId} />}
         </>
     )
 }

@@ -6,9 +6,11 @@ import { appWriteConfig } from "../appwrite/config"
 import { parseStringify } from "../utils"
 import { cookies } from "next/headers"
 import { avatarPlaceholderUrl } from "@/constant"
+import { redirect } from "next/navigation"
+import { error } from "console"
 
-const handleError = (error: unknown) => {
-    console.error(error)
+const handleError = (error: unknown, message: string) => {
+    console.error(error, message)
     throw error
 }
 
@@ -19,7 +21,7 @@ export const sendEmailOTP = async ({ email }: { email: string }) => {
         const session = await account.createEmailToken(ID.unique(), email)
         return session.userId
     } catch (error) {
-        handleError('Failed to send email OTP')
+        handleError(error, 'Failed to send email OTP')
     }
 }
 
@@ -68,12 +70,12 @@ export const verifySecret = async ({ accountId, password }: { accountId: string,
 
         return parseStringify({ sessionId: session.$id })
     } catch (error) {
-        handleError('Failed to verify OTP')
+        handleError(error, 'Failed to verify OTP')
     }
 }
 
 export const getCurrentUser = async () => {
-    const { database , account } = await createSessionClient()
+    const { database, account } = await createSessionClient()
 
     const result = await account.get()
 
@@ -82,4 +84,33 @@ export const getCurrentUser = async () => {
     if (user.total === 0) return null
 
     return parseStringify(user.documents[0])
+}
+
+export const signOutUser = async () => {
+    const { account } = await createSessionClient()
+
+    try {
+        await account.deleteSession('current');
+        (await cookies()).delete('appwrite-session')
+    } catch (error) {
+        handleError(error, 'Failed to sign out user')
+    } finally {
+        redirect('/sign-in')
+    }
+}
+
+export const signInUser = async ({ email }: { email: string }) => {
+    try {
+        const existingUser = await getUserByEmail(email)
+        // if (!existingUser) throw new Error('User not found')
+
+        if (existingUser) {
+            await sendEmailOTP({ email })
+            return parseStringify({ accountId: existingUser.accountId })
+        }
+
+        return parseStringify({ accountId: null, error: 'User not found' })
+    } catch (error) {
+        handleError(error, 'Failed to sign in user')
+    }
 }

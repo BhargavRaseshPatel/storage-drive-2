@@ -16,16 +16,17 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
 import FileUploader from './FileUploader'
+import { signOutUser } from '@/lib/action/user.actions'
 
 interface Props {
-    ownerId: string
+    $id : string,
     accountId: string
     fullName: string
     avatar: string
     email: string
 }
 
-const MobileNavigation = ({ ownerId, accountId, fullName, avatar, email }: Props) => {
+const MobileNavigation = ({ $id, accountId, fullName, avatar, email }: Props) => {
     const [open, setOpen] = useState(false)
     const pathname = usePathname()
 
@@ -66,8 +67,8 @@ const MobileNavigation = ({ ownerId, accountId, fullName, avatar, email }: Props
 
                         <div className='flex flex-col justify-between gap-5 pb-5'>
                             {/* File Uploader */}
-                            <FileUploader/>
-                            <Button type='submit' className='mobile-sign-out-button'>
+                            <FileUploader  ownerId={$id} accountId={accountId}/>
+                            <Button type='submit' className='mobile-sign-out-button' onClick={async ()=> await signOutUser()}>
                                 <Image src='/assets/icons/logout.svg' alt='logo' width={24} height={24} /><p>LogOut</p>
                             </Button>
                         </div>
