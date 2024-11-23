@@ -1,17 +1,20 @@
 "use server"
 
-import { Account, Client, Databases, Storage } from 'node-appwrite';
+import { Account, Avatars, Client, Databases, Storage } from 'node-appwrite';
 import { appWriteConfig } from './config';
 import { cookies } from 'next/headers';
 
 export const createSessionClient = async () => {
     const client = new Client()
-        .setEndpoint(appWriteConfig.endpointUrl).setProject(appWriteConfig.endpointUrl)
+        .setEndpoint(appWriteConfig.endpointUrl)
         .setProject(appWriteConfig.projectId)
 
     const session = (await cookies()).get('appwrite-session')
 
     if (!session || !session.value) throw new Error('No session')
+
+        console.log('Session:', session.value)
+        console.log('Client:', client)
     client.setSession(session.value)
 
     return {
@@ -26,7 +29,7 @@ export const createSessionClient = async () => {
 
 export const createAdminClient = async () => {
     const client = new Client()
-        .setEndpoint(appWriteConfig.endpointUrl).setProject(appWriteConfig.endpointUrl)
+        .setEndpoint(appWriteConfig.endpointUrl)
         .setProject(appWriteConfig.projectId)
         .setKey(appWriteConfig.secretKey)
 
@@ -41,7 +44,7 @@ export const createAdminClient = async () => {
             return new Storage(client)
         },
         get avatars() {
-            return new Storage(client)
+            return new Avatars(client)
         } 
     }
 }
