@@ -26,7 +26,7 @@ interface Props {
     email: string
 }
 
-const MobileNavigation = ({ $id, accountId, fullName, avatar, email }: Props) => {
+const MobileNavigation = ({ $id: ownerId, accountId, fullName, avatar, email }: Props) => {
     const [open, setOpen] = useState(false)
     const pathname = usePathname()
 
@@ -67,7 +67,7 @@ const MobileNavigation = ({ $id, accountId, fullName, avatar, email }: Props) =>
 
                         <div className='flex flex-col justify-between gap-5 pb-5'>
                             {/* File Uploader */}
-                            <FileUploader  ownerId={$id} accountId={accountId}/>
+                            <FileUploader  ownerId={ownerId} accountId={accountId}/>
                             <Button type='submit' className='mobile-sign-out-button' onClick={async ()=> await signOutUser()}>
                                 <Image src='/assets/icons/logout.svg' alt='logo' width={24} height={24} /><p>LogOut</p>
                             </Button>
