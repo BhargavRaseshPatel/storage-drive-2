@@ -13,8 +13,8 @@ export const createSessionClient = async () => {
 
     if (!session || !session.value) throw new Error('No session')
 
-        console.log('Session:', session.value)
-        console.log('Client:', client)
+    // console.log('Session:', session.value)
+    // console.log('Client:', client)
     client.setSession(session.value)
 
     return {
@@ -45,6 +45,6 @@ export const createAdminClient = async () => {
         },
         get avatars() {
             return new Avatars(client)
-        } 
+        }
     }
 }

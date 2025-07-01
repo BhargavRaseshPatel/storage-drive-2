@@ -13,9 +13,9 @@ import { sortTypes } from '@/constant'
 
 const Sort = () => {
   const path = usePathname()
-  const router = useRouter()
+  // const router = useRouter()
   const handleSort = (value: string) => {
-    router.push(`{path}?sort=${value}`)
+    // router.push(`{path}?sort=${value}`)
   }
 
   return (

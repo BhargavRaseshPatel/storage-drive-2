@@ -44,6 +44,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
         setIsDropDown(false)
         setAction(null)
         setFileName(file.name)
+        setLoading(false)
         // setEmail([])
     }
 
@@ -55,11 +56,12 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
 
         const actions = {
             rename: async () => renameFile({ fileId: file.$id, name: fileName, extension: file.extension, path: path }),
-            share: async () => { console.log('share'); return true},
-            delete: async () => { deleteFile({ fileId: file.$id, path: path, bucketFileId : file.bucketFileId }) },
+            share: async () => { console.log('share'); return true },
+            delete: async () => { deleteFile({ fileId: file.$id, path: path, bucketFileId: file.bucketFileId }) },
         }
 
         success = await actions[action.value as keyof typeof actions]()
+        console.log(success)
 
         if (success) closeAllModals()
 
@@ -80,17 +82,17 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
                             Are you sure you want to delete <span className='text-light-100'>{file.name}</span>?
                         </p>
                     )
-                }
+                    }
                 </DialogHeader>
-                ['rename', 'share', 'delete'].includes(value) && (
-                <DialogFooter className='flex flex-col gap-3 md:flex-row'>
-                    <Button onClick={closeAllModals} className='modal-cancel-button'>Cancel</Button>
-                    <Button onClick={handleAction} className='modal-submit-button'>
-                        <p className='capitalize'>{value}</p>
-                        {loading && (<Image src='/assets/icons/loader.svg' alt='loader' width={24} height={24} className='animate-spin' />)}
-                    </Button>
-                </DialogFooter>
-                )
+                {['rename', 'share', 'delete'].includes(value) && (
+                    <DialogFooter className='flex flex-col gap-3 md:flex-row'>
+                        <Button onClick={closeAllModals} className='modal-cancel-button'>Cancel</Button>
+                        <Button onClick={handleAction} className='modal-submit-button'>
+                            <p className='capitalize'>{value}</p>
+                            {loading && (<Image src='/assets/icons/loader.svg' alt='loader' width={24} height={24} className='animate-spin' />)}
+                        </Button>
+                    </DialogFooter>
+                )}
             </DialogContent>
         )
     }
@@ -108,9 +110,15 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
                             setAction(actionItem);
                             if (['rename', 'share', 'delete', 'details'].includes(actionItem.value)) { setIsModalOpen(true) }
                         }}>
-                            (actionItem.value === 'download' ? <Link href={constructDownloadUrl(file.bucketFileId)} download={file.name} className='flex items-center gap-2'>
-                                <Image src={actionItem.icon} alt={actionItem.label} width={24} height={24} />{actionItem.label}
-                            </Link>) : (<Image src={actionItem.icon} alt={actionItem.label} width={24} height={24} />{actionItem.label}) </DropdownMenuItem>))}
+                            {actionItem.value === 'download' ?
+                                (<Link href={constructDownloadUrl(file.bucketFileId)} download={file.name} className='flex items-center gap-2'>
+                                    <Image src={actionItem.icon} alt={actionItem.label} width={24} height={24} />{actionItem.label}
+                                </Link>) :
+                                (<div className='flex items-center gap-2'>
+                                    <Image src={actionItem.icon} alt={actionItem.label} width={24} height={24} />
+                                    {actionItem.label}
+                                </div>)}
+                        </DropdownMenuItem>))}
                 </DropdownMenuContent>
             </DropdownMenu>
             {renderDialogContent()}

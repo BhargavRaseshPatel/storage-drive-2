@@ -6,7 +6,6 @@ import { ID, Models, Query } from "node-appwrite"
 import { constructFileUrl, getFileType, parseStringify } from "../utils"
 import { revalidatePath } from "next/cache"
 import { getCurrentUser } from "./user.actions"
-import path from "path"
 
 const handleError = (error: unknown, message: string) => {
     console.error(error, message)
@@ -28,7 +27,7 @@ export const uploadFile = async ({ file, ownerId, accountId, path }: UploadFileP
             size: bucketFile.sizeOriginal,
             owner: ownerId,
             accountId,
-            user: [],
+            users: [],
             bucketFileId: bucketFile.$id
         }
 
@@ -90,6 +89,9 @@ export const renameFile = async ({ fileId, name, extension, path }: RenameFilePr
     try {
         const newName = `${name}.${extension}`
         const updatedFile = await database.updateDocument(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, fileId, { name: newName })
+
+        revalidatePath(path)
+        return parseStringify(updatedFile)
 
     } catch (error) {
         handleError(error, 'Failed to rename file')

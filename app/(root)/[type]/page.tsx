@@ -17,7 +17,7 @@ const page = async ({ searchParams, params }: SearchParamProps) => {
     const files = await getFiles({ types, searchText, sort })
     return (
         <div className='page-container'>
-            <section className='w-full'>
+            <section key="file-heading" className='w-full'>
                 <h1 className='h1 capitalize'>{type}</h1>
 
                 <div className='total-size-section'>
@@ -32,9 +32,9 @@ const page = async ({ searchParams, params }: SearchParamProps) => {
             {/* Render the files  */}
 
             {files.total > 0 ? (
-                <section className='file-list'>
+                <section key="file-section" className='file-list'>
                     {files.documents.map((file: Models.Document) => (
-                        <Card file={file} />
+                        <Card key={file.$id} file={file} />
                     ))}
                 </section>
             )
