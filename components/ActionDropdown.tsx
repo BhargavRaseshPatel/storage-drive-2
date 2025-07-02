@@ -29,7 +29,7 @@ import { deleteFile, renameFile, updateFileUser } from '@/lib/action/file.action
 import { usePathname } from 'next/navigation'
 import { FileDetail, ShareInput } from './ActionModalContent'
 
-const ActionDropdown = ({ file }: { file: Models.Document }) => {
+const ActionDropdown = ({ file, sharedFile }: { file: Models.Document, sharedFile: boolean }) => {
 
     const [action, setAction] = useState<ActionType | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -127,7 +127,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
                 <DropdownMenuContent>
                     <DropdownMenuLabel className='max-w-[200px] truncate'>{file.name}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    {actionsDropdownItems.map((actionItem) => (
+                    {!sharedFile ? <div>{actionsDropdownItems.map((actionItem) => (
                         <DropdownMenuItem key={actionItem.value} className='shad-dropdown-item' onClick={() => {
                             setAction(actionItem);
                             if (['rename', 'share', 'delete', 'details'].includes(actionItem.value)) { setIsModalOpen(true) }
@@ -140,7 +140,39 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
                                     <Image src={actionItem.icon} alt={actionItem.label} width={24} height={24} />
                                     {actionItem.label}
                                 </div>)}
-                        </DropdownMenuItem>))}
+                        </DropdownMenuItem>)
+                    )} </div> :
+                        <div>
+
+                            {[
+                                {
+                                    label: 'Details',
+                                    icon: '/assets/icons/info.svg',
+                                    value: 'details',
+                                },
+                                {
+                                    label: 'Download',
+                                    icon: '/assets/icons/download.svg',
+                                    value: 'download',
+                                },
+                            ].map((actionItem) => (
+                                <DropdownMenuItem key={actionItem.value} className='shad-dropdown-item' onClick={() => {
+                                    setAction(actionItem);
+                                    if (['details'].includes(actionItem.value)) { setIsModalOpen(true) }
+                                }}>
+                                    {actionItem.value === 'download' ?
+                                        (<Link href={constructDownloadUrl(file.bucketFileId)} download={file.name} className='flex items-center gap-2'>
+                                            <Image src={actionItem.icon} alt={actionItem.label} width={24} height={24} />{actionItem.label}
+                                        </Link>) :
+                                        (<div className='flex items-center gap-2'>
+                                            <Image src={actionItem.icon} alt={actionItem.label} width={24} height={24} />
+                                            {actionItem.label}
+                                        </div>)}
+                                </DropdownMenuItem>)
+                            )}
+
+                        </div>
+                    }
                 </DropdownMenuContent>
             </DropdownMenu>
             {renderDialogContent()}
