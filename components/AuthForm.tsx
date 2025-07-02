@@ -20,6 +20,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { createAccount, signInUser } from '@/lib/action/user.actions'
 import OTPModal from './OTPModal'
+import {  useRouter } from 'next/navigation'
 
 const formSchema = z.object({
     username: z.string().min(2).max(50),
@@ -39,6 +40,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [accountId, setAccountId] = useState(null)
+    const router = useRouter()
     // 1. Define your form.
 
     const formSchema = authFormSchema(type)
@@ -67,7 +69,11 @@ const AuthForm = ({ type }: { type: FormType }) => {
                 }) : await signInUser({
                     email: values.email
                 })
-            console.log(values)
+            // console.log(user)
+
+            // if(user.error == "User not found"){
+            //     return router.push("/sign-up")
+            // }
 
             setAccountId(user.accountId)
         } catch {

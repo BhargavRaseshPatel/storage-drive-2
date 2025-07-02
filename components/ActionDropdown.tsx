@@ -25,9 +25,9 @@ import Link from 'next/link'
 import { constructDownloadUrl } from '@/lib/utils'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
-import { deleteFile, renameFile } from '@/lib/action/file.action'
+import { deleteFile, renameFile, updateFileUser } from '@/lib/action/file.action'
 import { usePathname } from 'next/navigation'
-import { FileDetail } from './ActionModalContent'
+import { FileDetail, ShareInput } from './ActionModalContent'
 
 const ActionDropdown = ({ file }: { file: Models.Document }) => {
 
@@ -36,6 +36,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     const [isDropDown, setIsDropDown] = useState(false)
     const [fileName, setFileName] = useState(file.name)
     const [loading, setLoading] = useState(false)
+    const [email, setEmail] = useState<string>("")
 
     const path = usePathname()
 
@@ -48,6 +49,21 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
         // setEmail([])
     }
 
+    // console.log(file)
+    const handleRemoveUser = async (email: string) => {
+        const emails = file.users
+        const updateEmails = emails.filter((e: string) => e !== email)
+
+        const success = await updateFileUser({
+            fileId: file.$id,
+            emails: updateEmails,
+            path
+        })
+
+        if (success) setEmail("")
+        closeAllModals()
+    }
+
     const handleAction = async () => {
         if (!action) return;
         setLoading(true)
@@ -56,12 +72,17 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
 
         const actions = {
             rename: async () => renameFile({ fileId: file.$id, name: fileName, extension: file.extension, path: path }),
-            share: async () => { console.log('share'); return true },
+            share: async () => {
+                const emails = file.users;
+                emails.push(email);
+                const updatedFile = await updateFileUser({ fileId: file.$id, emails, path })
+                return updatedFile
+            },
             delete: async () => { deleteFile({ fileId: file.$id, path: path, bucketFileId: file.bucketFileId }) },
         }
 
         success = await actions[action.value as keyof typeof actions]()
-        console.log(success)
+        // console.log(success)
 
         if (success) closeAllModals()
 
@@ -77,6 +98,7 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
                     <DialogTitle className='text-center text-light-100'>{label}</DialogTitle>
                     {value === 'rename' && <Input type='text' value={fileName} onChange={(e) => setFileName(e.target.value)} />}
                     {value === 'details' && <FileDetail file={file} />}
+                    {value === 'share' && (<ShareInput file={file} onInputChange={setEmail} onRemove={handleRemoveUser} />)}
                     {value === 'delete' && (
                         <p className='delete-confirmation'>
                             Are you sure you want to delete <span className='text-light-100'>{file.name}</span>?

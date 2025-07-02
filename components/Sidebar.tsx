@@ -13,7 +13,7 @@ interface Props {
     email: string
 }
 
-const Sidebar = ({fullName, avatar, email } : Props) => {
+const Sidebar = ({ fullName, avatar, email }: Props) => {
 
     const pathname = usePathname()
 
@@ -45,7 +45,7 @@ const Sidebar = ({fullName, avatar, email } : Props) => {
                 <div className='hidden lg:block'>
                     <p className='subtitle-2 capitalize'>{fullName}</p>
                     <p className='caption'>{email}</p>
-                    </div>
+                </div>
             </div>
         </aside>
     )

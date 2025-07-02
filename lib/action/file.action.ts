@@ -113,3 +113,20 @@ export const deleteFile = async ({ fileId, bucketFileId, path }: DeleteFileProps
         handleError(error, 'Failed to delete file')
     }
 }
+
+export const updateFileUser = async ({ fileId, emails, path }: UpdateFileUsersProps) => {
+    const { database } = await createAdminClient()
+
+    try {
+        const updatedEmailsInFile = await database.updateDocument(
+            appWriteConfig.databaseId, appWriteConfig.fileCollectionId, fileId, {
+            users: emails
+        }
+        )
+        console.log("updatedEmailsInFile",updatedEmailsInFile)
+        revalidatePath(path)
+        return parseStringify(updatedEmailsInFile)
+    } catch (error) {
+        handleError(error, "Failed to update the adding new user email")
+    }
+}
