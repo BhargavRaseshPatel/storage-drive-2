@@ -3,7 +3,7 @@ import { InputFile } from "node-appwrite/file"
 import { createAdminClient } from "../appwrite"
 import { appWriteConfig } from "../appwrite/config"
 import { ID, Models, Query } from "node-appwrite"
-import { constructFileUrl, getFileType, parseStringify } from "../utils"
+import { constructFileUrl, convertFileSize, getFileType, parseStringify } from "../utils"
 import { revalidatePath } from "next/cache"
 import { getCurrentUser } from "./user.actions"
 
@@ -75,8 +75,12 @@ export const getFiles = async ({ types = [], searchText = '', sort = '$createdAt
             appWriteConfig.fileCollectionId,
             queries
         )
+        let size = 0;
 
-        return parseStringify(files)
+        (files.documents.forEach((element) => size += element.size ))
+        const totalSize = convertFileSize(size)
+
+        return parseStringify({...files, totalSize})
 
     } catch (error) {
         handleError(error, 'Failed to get files')

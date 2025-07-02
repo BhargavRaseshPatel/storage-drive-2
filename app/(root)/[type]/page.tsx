@@ -19,7 +19,6 @@ const page = async ({ searchParams, params }: SearchParamProps) => {
 
     let currentUer = await getCurrentUser()
 
-    console.log(currentUer)
     return (
         <div className='page-container'>
             <section key="file-heading" className='w-full'>
@@ -33,7 +32,7 @@ const page = async ({ searchParams, params }: SearchParamProps) => {
                 </div>
 
                 <div className='total-size-section'>
-                    <p className='body-1'>Total : <span className='h5'> 0 MB</span></p>
+                    <p className='body-1'>Total : <span className='h5'>{files.totalSize}</span></p>
                     <div className='sort-container'>
                         <p className='body-1 hidden sm:block text-light-200'> Sort by :</p>
                         <Sort />

@@ -80,6 +80,25 @@ export const navItems = [
       value: 'size-asc',
     },
   ];
+
+  export const dashboardFiles = [
+    {
+      type : "Documents",
+      url : "/assets/icons/dashboard-documents.svg"
+    },
+    {
+      type : "Images",
+      url : "/assets/icons/dashboard-image.svg"
+    },
+    {
+      type : "Video, Audio",
+      url : "/assets/icons/dashboard-video.svg"
+    },
+    {
+      type : "Others",
+      url : "/assets/icons/dashboard-others.svg"
+    },
+  ]
   
   export const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 

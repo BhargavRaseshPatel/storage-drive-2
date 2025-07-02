@@ -71,9 +71,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
                 })
             // console.log(user)
 
-            // if(user.error == "User not found"){
-            //     return router.push("/sign-up")
-            // }
+            if(user.error == "User not found"){
+                return router.push("/sign-up")
+            }
 
             setAccountId(user.accountId)
         } catch {
