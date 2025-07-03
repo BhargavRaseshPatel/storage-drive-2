@@ -1,6 +1,6 @@
 "use server"
 import { InputFile } from "node-appwrite/file"
-import { createAdminClient } from "../appwrite"
+import { createAdminClient, createSessionClient } from "../appwrite"
 import { appWriteConfig } from "../appwrite/config"
 import { ID, Models, Query } from "node-appwrite"
 import { constructFileUrl, convertFileSize, getFileType, parseStringify } from "../utils"
@@ -77,10 +77,10 @@ export const getFiles = async ({ types = [], searchText = '', sort = '$createdAt
         )
         let size = 0;
 
-        (files.documents.forEach((element) => size += element.size ))
+        (files.documents.forEach((element) => size += element.size))
         const totalSize = convertFileSize(size)
 
-        return parseStringify({...files, totalSize})
+        return parseStringify({ ...files, totalSize })
 
     } catch (error) {
         handleError(error, 'Failed to get files')
@@ -127,10 +127,60 @@ export const updateFileUser = async ({ fileId, emails, path }: UpdateFileUsersPr
             users: emails
         }
         )
-        console.log("updatedEmailsInFile",updatedEmailsInFile)
+        console.log("updatedEmailsInFile", updatedEmailsInFile)
         revalidatePath(path)
         return parseStringify(updatedEmailsInFile)
     } catch (error) {
         handleError(error, "Failed to update the adding new user email")
+    }
+}
+
+export const getSizeOfAllDocuments = async () => {
+    const { database, account } = await createSessionClient()
+
+    try {
+        const result = await account.get()
+
+        const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('accountId', [result.$id])])
+
+        const allDocumentsSize = {
+            documents: {
+                size: 0,
+                totalItems: 0
+            },
+            images: {
+                size: 0,
+                totalItems: 0
+            },
+            media: {
+                size: 0,
+                totalItems: 0
+            },
+            others: {
+                size: 0,
+                totalItems: 0
+            },
+        }
+
+        // console.log(files)
+
+        return files.documents.reduce((accumulator, currentValue) => {
+            if (currentValue.type == 'document') {
+                accumulator['documents'].size += currentValue.size
+                accumulator['documents'].totalItems += 1;
+            } else if (['video', 'audio'].includes(currentValue.type)) {
+                accumulator.media.totalItems += 1
+                accumulator.media.size += currentValue.size
+            } else if (currentValue.type == 'image') {
+                accumulator.images.totalItems += 1;
+                accumulator.images.size += currentValue.size
+            } else {
+                accumulator.others.size += currentValue.size
+                accumulator.others.totalItems += 1
+            }
+            return accumulator
+        }, allDocumentsSize)
+    } catch (error) {
+        console.log("Error while fetching the data", error)
     }
 }

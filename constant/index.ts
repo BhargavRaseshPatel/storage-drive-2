@@ -83,23 +83,28 @@ export const navItems = [
 
   export const dashboardFiles = [
     {
-      type : "Documents",
-      url : "/assets/icons/dashboard-documents.svg"
+      name : "Documents",
+      url : "/assets/icons/dashboard-documents.svg",
+      type : 'documents'
     },
     {
-      type : "Images",
-      url : "/assets/icons/dashboard-image.svg"
+      name : "Images",
+      url : "/assets/icons/dashboard-image.svg",
+      type : "images"
     },
     {
-      type : "Video, Audio",
-      url : "/assets/icons/dashboard-video.svg"
+      name : "Video, Audio",
+      url : "/assets/icons/dashboard-video.svg",
+      type : "media"
     },
     {
-      type : "Others",
-      url : "/assets/icons/dashboard-others.svg"
+      name : "Others",
+      url : "/assets/icons/dashboard-others.svg",
+      type : "others"
     },
   ]
   
-  export const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+  export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  export const MAXIMUM_TOTAL_STORAGE = 100 * 1024 * 1024; // 100 MB
 
   export const avatarPlaceholderUrl = 'https://cdn.pixabay.com/photo/2016/11/14/17/39/person-1824144_1280.png'
