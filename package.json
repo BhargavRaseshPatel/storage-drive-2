@@ -13,7 +13,11 @@
     "react-dom": "$react-dom"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^3.9.1",
+    "@mui/material": "^7.2.0",
+    "@mui/x-charts": "^8.6.0",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",

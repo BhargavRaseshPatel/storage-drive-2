@@ -8,7 +8,7 @@ import ActionDropdown from './ActionDropdown'
 
 const Card = ({ file, accountId }: { file: Models.Document, accountId: string }) => {
     return (
-        <div className={`border rounded-2xl ${accountId != file.accountId && 'border-red' }`}>
+        <div className={`border-2 rounded-2xl ${accountId != file.accountId && 'border-red' }`}>
             <Link href={file.url} target='_blank' className='file-card'>
                 <div className='flex justify-between'>
                     <Thumbnail type={file.type} extension={file.extension} url={file.url} className='size-20' imageClassName='size-11' />

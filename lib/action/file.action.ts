@@ -160,6 +160,7 @@ export const getSizeOfAllDocuments = async () => {
                 size: 0,
                 totalItems: 0
             },
+            totalSize : 0
         }
 
         // console.log(files)
@@ -178,6 +179,7 @@ export const getSizeOfAllDocuments = async () => {
                 accumulator.others.size += currentValue.size
                 accumulator.others.totalItems += 1
             }
+            accumulator.totalSize += currentValue.size
             return accumulator
         }, allDocumentsSize)
     } catch (error) {
