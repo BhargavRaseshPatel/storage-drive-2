@@ -25,7 +25,7 @@ export const sendEmailOTP = async ({ email }: { email: string }) => {
     }
 }
 
-const getUserByEmail = async (email: string) => {
+export const getUserByEmail = async (email: string) => {
     const { database } = await createAdminClient()
 
     const result = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.userCollectionId, [Query.equal('email', [email])],)

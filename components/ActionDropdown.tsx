@@ -28,6 +28,8 @@ import { Button } from './ui/button'
 import { deleteFile, renameFile, updateFileUser } from '@/lib/action/file.action'
 import { usePathname } from 'next/navigation'
 import { FileDetail, ShareInput } from './ActionModalContent'
+import { getUserByEmail } from '@/lib/action/user.actions'
+import { useToast } from '@/hooks/use-toast'
 
 const ActionDropdown = ({ file, sharedFile }: { file: Models.Document, sharedFile: boolean }) => {
 
@@ -37,6 +39,7 @@ const ActionDropdown = ({ file, sharedFile }: { file: Models.Document, sharedFil
     const [fileName, setFileName] = useState(file.name)
     const [loading, setLoading] = useState(false)
     const [email, setEmail] = useState<string>("")
+    const { toast } = useToast()
 
     const path = usePathname()
 
@@ -73,10 +76,18 @@ const ActionDropdown = ({ file, sharedFile }: { file: Models.Document, sharedFil
         const actions = {
             rename: async () => renameFile({ fileId: file.$id, name: fileName, extension: file.extension, path: path }),
             share: async () => {
-                const emails = file.users;
-                emails.push(email);
-                const updatedFile = await updateFileUser({ fileId: file.$id, emails, path })
-                return updatedFile
+                const userRegistered = await getUserByEmail(email);
+                if (userRegistered) {
+                    const emails = file.users;
+                    emails.push(email);
+                    const updatedFile = await updateFileUser({ fileId: file.$id, emails, path })
+                    return updatedFile
+                }
+                return toast({
+                    description: (<p className='body-2 text-white'><span className='font-semibold'>
+                        No account found with this email address</span></p>
+                    ), className: 'error-toast'
+                })
             },
             delete: async () => { deleteFile({ fileId: file.$id, path: path, bucketFileId: file.bucketFileId }) },
         }
