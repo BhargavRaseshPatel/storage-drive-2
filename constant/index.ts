@@ -104,7 +104,7 @@ export const navItems = [
     },
   ]
   
-  export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  export const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
   export const MAXIMUM_TOTAL_STORAGE = 100 * 1024 * 1024; // 100 MB
 
   export const avatarPlaceholderUrl = 'https://cdn.pixabay.com/photo/2016/11/14/17/39/person-1824144_1280.png'

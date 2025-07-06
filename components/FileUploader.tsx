@@ -5,10 +5,10 @@ import { Button } from './ui/button'
 import { cn, convertFileSize, convertFileToUrl, getFileType } from '@/lib/utils'
 import Image from 'next/image'
 import Thumbnail from './Thumbnail'
-import { MAX_FILE_SIZE } from '@/constant'
+import { MAX_FILE_SIZE, MAXIMUM_TOTAL_STORAGE } from '@/constant'
 import { useToast } from '@/hooks/use-toast'
 import { usePathname } from 'next/navigation'
-import { uploadFile } from '@/lib/action/file.action'
+import { getSizeOfAllDocuments, uploadFile } from '@/lib/action/file.action'
 
 interface Props {
   ownerId: string
@@ -31,7 +31,19 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
 
         return toast({
           description: (<p className='body-2 text-white'><span className='font-semibold'>{file.name}</span> is too large.
-            Max file size is 10MB.</p>
+            Max file size is 15MB.</p>
+          ), className: 'error-toast'
+        });
+      }
+
+      const totalStorage = await getSizeOfAllDocuments()
+
+      if ((totalStorage?.totalSize ?? 0) + file.size > MAXIMUM_TOTAL_STORAGE) {
+        setFile((prevFiles) => prevFiles.filter((f: any) => f.name !== file.name))
+
+        return toast({
+          description: (<p className='body-2 text-white'>Adding <span className='font-semibold'>{file.name}</span>
+            result in exceeding your storage capacity.</p>
           ), className: 'error-toast'
         });
       }

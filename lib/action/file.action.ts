@@ -143,7 +143,7 @@ export const getSizeOfAllDocuments = async () => {
 
         const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('accountId', [result.$id])])
 
-        const allDocumentsSize = {
+        const allDocumentsSize : DocumentsSizeProps = {
             documents: {
                 size: 0,
                 totalItems: 0

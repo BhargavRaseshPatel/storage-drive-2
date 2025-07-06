@@ -69,6 +69,19 @@ declare interface ThumbnailProps {
   imageClassName?: string;
 }
 
+declare type DocumentFileType = 'documents' | 'media' | 'images' | 'others';
+
+declare interface SizeInfo {
+  size: number;
+  totalItems: number;
+}
+
+declare type DocumentsSizeProps = {
+  [key in DocumentFileType]: SizeInfo;
+} & {
+  totalSize: number;
+};
+
 declare interface ShareInputProps {
   file: Models.Document;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
