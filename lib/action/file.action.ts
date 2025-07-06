@@ -127,7 +127,6 @@ export const updateFileUser = async ({ fileId, emails, path }: UpdateFileUsersPr
             users: emails
         }
         )
-        console.log("updatedEmailsInFile", updatedEmailsInFile)
         revalidatePath(path)
         return parseStringify(updatedEmailsInFile)
     } catch (error) {
