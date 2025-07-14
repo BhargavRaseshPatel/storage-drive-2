@@ -37,7 +37,7 @@ export default function Home() {
     <div className="h-full">
 
       <div className="grid xl:grid-cols-4 sm:grid-cols-2 gap-4 p-8 bg-amber-100">
-        <div className="col-span-2 h-60">
+        <div className="col-span-2 h-60 bg-white rounded-xl pt-4">
           <PieChart
             width={250}
             height={250}
@@ -61,7 +61,7 @@ export default function Home() {
             ]}
           />
         </div>
-        <div className="col-span-2 h-60">
+        <div className="col-span-2 h-60 bg-white rounded-xl pt-4">
           <PieChart
             width={250}
             height={250}

@@ -47,9 +47,15 @@ export const uploadFile = async ({ file, ownerId, accountId, path }: UploadFileP
 }
 
 const createQueries = (currentUser: Models.Document, types: string[], searchText: string, sort: string, limit?: number) => {
-    const queries = [Query.or([Query.equal('owner', [currentUser.$id]), Query.contains('users', [currentUser.email])])]
+    const queries = []
+    if (types.includes("shared")) {
+        queries.push(Query.contains('users', [currentUser.email]))
+    } else {
+        queries.push(Query.equal('owner', [currentUser.$id]))
+        if (types.length > 0) queries.push(Query.equal('type', types))
+    }
+    // const queries = [Query.or([),]]
 
-    if (types.length > 0) queries.push(Query.equal('type', types))
     if (searchText) queries.push(Query.contains('name', searchText))
     if (limit) queries.push(Query.limit(limit))
 
@@ -142,7 +148,7 @@ export const getSizeOfAllDocuments = async () => {
 
         const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('accountId', [result.$id])])
 
-        const allDocumentsSize : DocumentsSizeProps = {
+        const allDocumentsSize: DocumentsSizeProps = {
             documents: {
                 size: 0,
                 totalItems: 0
@@ -159,7 +165,7 @@ export const getSizeOfAllDocuments = async () => {
                 size: 0,
                 totalItems: 0
             },
-            totalSize : 0
+            totalSize: 0
         }
 
         // console.log(files)

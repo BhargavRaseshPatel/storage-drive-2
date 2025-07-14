@@ -229,6 +229,8 @@ export const getFileTypesParams = (type: string) => {
       return ["video", "audio"];
     case "others":
       return ["other"];
+    case "shared":
+      return ["shared"];
     default:
       return ["document"];
   }

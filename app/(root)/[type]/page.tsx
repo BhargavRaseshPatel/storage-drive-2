@@ -24,11 +24,6 @@ const page = async ({ searchParams, params }: SearchParamProps) => {
             <section key="file-heading" className='w-full'>
                 <div className='flex justify-between'>
                     <h1 className='h1 capitalize'>{type}</h1>
-                    <div className='flex gap-3 bg-white rounded-full items-center px-4 border border-gray-200'>
-                        <div className='rounded-full h-5 w-5 bg-red' >
-                        </div>
-                        <p>Shared files have a red border</p>
-                    </div>
                 </div>
 
                 <div className='total-size-section'>
