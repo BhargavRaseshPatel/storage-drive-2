@@ -28,6 +28,11 @@ export const navItems = [
     name: 'Shared',
     icon: '/assets/icons/shared.svg',
     url: '/shared'
+  },
+  {
+    name: 'Profile',
+    icon: '/assets/icons/user.svg',
+    url: '/profile'
   }
 ];
 

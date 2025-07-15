@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sheet"
 import { usePathname } from 'next/navigation'
 import { Separator } from '@radix-ui/react-separator'
-import { navItems } from '@/constant'
+import { avatarPlaceholderUrl, navItems } from '@/constant'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
@@ -19,7 +19,7 @@ import FileUploader from './FileUploader'
 import { signOutUser } from '@/lib/action/user.actions'
 
 interface Props {
-    $id : string,
+    $id: string,
     accountId: string
     fullName: string
     avatar: string
@@ -40,10 +40,10 @@ const MobileNavigation = ({ $id: ownerId, accountId, fullName, avatar, email }: 
                 <SheetContent className='shad-sheet h-screen px-3'>
                     <SheetHeader>
                         <SheetTitle>
-                            <div>
-                                <Image src={avatar} alt='Avatar' width={44} height={44} className='header-user-avatar' />
-                                <div className='sm:hidden lg:block'>
-                                    <p className='subtitle-2 capitalize'>{fullName}</p>
+                            <div className='bg-brand mt-8 bg-brand/10 gap-2 rounded-full p-2 flex justify-start w-full'>
+                                <Image src={avatarPlaceholderUrl} alt='Avatar' width={44} height={44} className='sidebar-user-avatar' />
+                                <div className='block lg:hidden'>
+                                    <p className='subtitle-2 capitalize flex justify-start'>{fullName}</p>
                                     <p className='caption'>{email}</p>
                                 </div>
                             </div>
@@ -67,8 +67,8 @@ const MobileNavigation = ({ $id: ownerId, accountId, fullName, avatar, email }: 
 
                         <div className='flex flex-col justify-between gap-5 pb-5'>
                             {/* File Uploader */}
-                            <FileUploader  ownerId={ownerId} accountId={accountId}/>
-                            <Button type='submit' className='mobile-sign-out-button' onClick={async ()=> await signOutUser()}>
+                            <FileUploader ownerId={ownerId} accountId={accountId} />
+                            <Button type='submit' className='mobile-sign-out-button' onClick={async () => await signOutUser()}>
                                 <Image src='/assets/icons/logout.svg' alt='logo' width={24} height={24} /><p>LogOut</p>
                             </Button>
                         </div>

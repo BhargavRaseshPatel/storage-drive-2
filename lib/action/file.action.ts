@@ -191,3 +191,21 @@ export const getSizeOfAllDocuments = async () => {
         console.log("Error while fetching the data", error)
     }
 }
+
+export const getTotalSizeUsed = async () => {
+    const { database, account } = await createSessionClient()
+
+    try {
+        const result = await account.get()
+
+        const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('accountId', [result.$id])])
+
+        const totalSize = files.documents.reduce((accumulator, currentValue) => {
+            return accumulator + (currentValue.size || 0)
+        }, 0)
+
+        return totalSize
+    } catch (error) {
+        console.log("Error while fetching the total Size", error)
+    }
+}

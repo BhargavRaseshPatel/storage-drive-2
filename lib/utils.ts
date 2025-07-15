@@ -1,3 +1,4 @@
+import { MAXIMUM_TOTAL_STORAGE } from "@/constant";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -25,7 +26,7 @@ export const convertFileSize = (sizeInBytes: number, digits?: number) => {
 };
 
 export const calculatePercentage = (sizeInBytes: number) => {
-  const totalSizeInBytes = 200 * 1024 * 1024; // 200MB in bytes
+  const totalSizeInBytes = MAXIMUM_TOTAL_STORAGE ?? 200 * 1024 * 1024; // 200MB in bytes
   const percentage = (sizeInBytes / totalSizeInBytes) * 100;
   return Number(percentage.toFixed(2));
 };
