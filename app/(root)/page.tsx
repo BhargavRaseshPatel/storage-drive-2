@@ -18,7 +18,45 @@ export default function Home() {
     spaceUsed: 0
   })
 
-  const [storageInformation, setStorageInformation] = useState<any>()
+  type StorageInformationProps = {
+    documents: {
+      size: number,
+      totalItems: number
+    },
+    images: {
+      size: number,
+      totalItems: number
+    },
+    media: {
+      size: number,
+      totalItems: number
+    },
+    others: {
+      size: number,
+      totalItems: number
+    },
+    totalSize: number
+  }
+
+  const [storageInformation, setStorageInformation] = useState<StorageInformationProps>({
+    documents: {
+      size: 0,
+      totalItems: 0
+    },
+    images: {
+      size: 0,
+      totalItems: 0
+    },
+    media: {
+      size: 0,
+      totalItems: 0
+    },
+    others: {
+      size: 0,
+      totalItems: 0
+    },
+    totalSize: 0
+  })
 
   useEffect(() => {
 
@@ -84,25 +122,45 @@ export default function Home() {
           />
         </div>
 
-        {dashboardFiles.map(({ url, name, type }) => (
-          <div className="relative" key={url}>
-            <Image alt="image" src={url} height={200} width={200} className="mx-auto object-cover w-[200px] h-[200px]" />
-            <div className="absolute text-center w-full left-2 top-20">
-              <p className=" text-lg">{name}</p>
-              <Image src={'/assets/icons/line.svg'} alt="line" width={100} height={5} className="mx-auto mt-2" />
+        {dashboardFiles.map(({ url, name, type }: { url: string; name: string; type: string }) => {
+          type FileCategory = Exclude<keyof StorageInformationProps, "totalSize">;
+          const fileData = storageInformation[type as FileCategory];
 
-              {storageInformation ?
-                <>
-                  <p className="mt-4">Total items : <span className='h5'>{storageInformation[type]?.totalItems}</span></p>
-                  <p className="mt-2">Total size : <span className='h5'>{convertFileSize(storageInformation[type]?.size)}</span></p>
-                </> :
-                (
+          return (
+            <div className="relative" key={url}>
+              <Image
+                alt="image"
+                src={url}
+                height={200}
+                width={200}
+                className="mx-auto object-cover w-[200px] h-[200px]"
+              />
+              <div className="absolute text-center w-full left-2 top-20">
+                <p className=" text-lg">{name}</p>
+                <Image
+                  src={"/assets/icons/line.svg"}
+                  alt="line"
+                  width={100}
+                  height={5}
+                  className="mx-auto mt-2"
+                />
+
+                {fileData ? (
+                  <>
+                    <p className="mt-4">
+                      Total items : <span className="h5">{fileData.totalItems}</span>
+                    </p>
+                    <p className="mt-2">
+                      Total size : <span className="h5">{convertFileSize(fileData.size)}</span>
+                    </p>
+                  </>
+                ) : (
                   <p className="mt-4 text-gray-400">Loading...</p>
-                )
-              }
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
 
       </div>
