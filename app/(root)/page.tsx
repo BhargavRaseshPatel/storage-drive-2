@@ -61,7 +61,7 @@ export default function Home() {
   useEffect(() => {
 
     const fetchData = async () => {
-      const sizeAlltheFile: any = await getSizeOfAllDocuments()
+      const sizeAlltheFile = await getSizeOfAllDocuments() as StorageInformationProps;
       setSpace({
         spaceUsed: calculatePercentage(sizeAlltheFile.totalSize),
         spaceAvailable: 100 - calculatePercentage(sizeAlltheFile.totalSize)
