@@ -32,7 +32,7 @@ const MobileNavigation = ({ $id: ownerId, accountId, fullName, avatar, email }: 
 
     return (
         <header className='mobile-header'>
-            <Image src='/assets/icons/logo-full-brand.svg' alt='logo' width={120} height={52} className=' h-auto' />
+            <Image src='/assets/new_icons/logo-full.svg' alt='logo' width={120} height={52} className=' h-auto' />
             <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger>
                     <Image src='/assets/icons/menu.svg' alt='menu' width={30} height={30} />
