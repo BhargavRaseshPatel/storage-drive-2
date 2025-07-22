@@ -63,7 +63,7 @@ export const verifySecret = async ({ accountId, password }: { accountId: string,
         (await cookies()).set('appwrite-session', session.secret, {
             path: '/',
             httpOnly: true,
-            sameSite: 'strict',
+            sameSite: 'none',
             secure: true,
         })
 
@@ -74,16 +74,27 @@ export const verifySecret = async ({ accountId, password }: { accountId: string,
 }
 
 export const getCurrentUser = async () => {
-    const { database, account } = await createSessionClient()
+  try {
+    const { database, account } = await createSessionClient();
 
-    const result = await account.get()
+    const result = await account.get();
 
-    const user = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.userCollectionId, [Query.equal('accountId', [result.$id])])
+    const user = await database.listDocuments(
+      appWriteConfig.databaseId,
+      appWriteConfig.userCollectionId,
+      [Query.equal("accountId", [result.$id])]
+    );
 
-    if (user.total === 0) return null
+    if (user.total === 0) return null;
 
-    return parseStringify(user.documents[0])
-}
+    return parseStringify(user.documents[0]);
+  } catch (error) {
+    console.error("getCurrentUser failed", error);
+    return null; // ✅ Safe return, won’t crash production
+  }
+};
+
+
 
 export const signOutUser = async () => {
     const { account } = await createSessionClient()

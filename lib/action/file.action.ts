@@ -1,9 +1,9 @@
 "use server"
 import { InputFile } from "node-appwrite/file"
-import { createAdminClient, createSessionClient } from "../appwrite"
+import { createAdminClient } from "../appwrite"
 import { appWriteConfig } from "../appwrite/config"
 import { ID, Models, Query } from "node-appwrite"
-import { constructFileUrl, convertFileSize, getFileType, parseStringify } from "../utils"
+import { calculatePercentage, constructFileUrl, convertFileSize, getFileType, parseStringify } from "../utils"
 import { revalidatePath } from "next/cache"
 import { getCurrentUser } from "./user.actions"
 
@@ -141,71 +141,88 @@ export const updateFileUser = async ({ fileId, emails, path }: UpdateFileUsersPr
 }
 
 export const getSizeOfAllDocuments = async () => {
-    const { database, account } = await createSessionClient()
+    const { database } = await createAdminClient();
 
     try {
-        const result = await account.get()
+        const currentUser = await getCurrentUser();
+        if (!currentUser) throw new Error("User not found");
 
-        const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('accountId', [result.$id])])
+        const files = await database.listDocuments(
+            appWriteConfig.databaseId,
+            appWriteConfig.fileCollectionId,
+            [Query.equal("owner", [currentUser.$id])]
+        );
 
-        const allDocumentsSize: DocumentsSizeProps = {
-            documents: {
-                size: 0,
-                totalItems: 0
-            },
-            images: {
-                size: 0,
-                totalItems: 0
-            },
-            media: {
-                size: 0,
-                totalItems: 0
-            },
-            others: {
-                size: 0,
-                totalItems: 0
-            },
-            totalSize: 0
-        }
-
-        // console.log(files)
+        const allDocumentsSize = {
+            documents: { size: 0, totalItems: 0 },
+            images: { size: 0, totalItems: 0 },
+            media: { size: 0, totalItems: 0 },
+            others: { size: 0, totalItems: 0 },
+            totalSize: 0,
+        };
 
         return files.documents.reduce((accumulator, currentValue) => {
-            if (currentValue.type == 'document') {
-                accumulator['documents'].size += currentValue.size
-                accumulator['documents'].totalItems += 1;
-            } else if (['video', 'audio'].includes(currentValue.type)) {
-                accumulator.media.totalItems += 1
-                accumulator.media.size += currentValue.size
-            } else if (currentValue.type == 'image') {
+            if (currentValue.type === "document") {
+                accumulator.documents.size += currentValue.size;
+                accumulator.documents.totalItems += 1;
+            } else if (["video", "audio"].includes(currentValue.type)) {
+                accumulator.media.size += currentValue.size;
+                accumulator.media.totalItems += 1;
+            } else if (currentValue.type === "image") {
+                accumulator.images.size += currentValue.size;
                 accumulator.images.totalItems += 1;
-                accumulator.images.size += currentValue.size
             } else {
-                accumulator.others.size += currentValue.size
-                accumulator.others.totalItems += 1
+                accumulator.others.size += currentValue.size;
+                accumulator.others.totalItems += 1;
             }
-            accumulator.totalSize += currentValue.size
-            return accumulator
-        }, allDocumentsSize)
+            accumulator.totalSize += currentValue.size;
+            return accumulator;
+        }, allDocumentsSize);
     } catch (error) {
-        console.log("Error while fetching the data", error)
+        console.log("Error while fetching the data", error);
+        return {
+            documents: { size: 0, totalItems: 0 },
+            images: { size: 0, totalItems: 0 },
+            media: { size: 0, totalItems: 0 },
+            others: { size: 0, totalItems: 0 },
+            totalSize: 0,
+        };
     }
-}
+};
 
 export const getTotalSizeUsed = async () => {
-    const { database, account } = await createSessionClient()
+  try {
+    const { database } = await createAdminClient();
+    const currentUser = await getCurrentUser();
 
-    try {
-        const result = await account.get()
+    if (!currentUser) throw new Error("User not found");
 
-        const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('accountId', [result.$id])])
+    const files = await database.listDocuments(
+      appWriteConfig.databaseId,
+      appWriteConfig.fileCollectionId,
+      [Query.equal("owner", [currentUser.$id])]
+    );
 
-        const totalSize = files.documents.reduce((accumulator, currentValue) => {
-            return accumulator + (currentValue.size || 0)
-        }, 0)
-
-        return totalSize
-    } catch (error) {
-        console.log("Error while fetching the total Size", error)
+    let totalSize = 0;
+    for (const doc of files.documents) {
+      if (typeof doc.size === "number") {
+        totalSize += doc.size;
+      } else {
+        console.warn("Missing or invalid size in doc:", doc);
+      }
     }
-}
+
+    const percentageUsed = calculatePercentage(totalSize);
+
+    return {
+      percentageUsed,
+      sizeInBytes: totalSize,
+    };
+  } catch (error) {
+    console.error("Error while fetching the total size used:", error);
+    return {
+      percentageUsed: 0,
+      sizeInBytes: 0,
+    };
+  }
+};
