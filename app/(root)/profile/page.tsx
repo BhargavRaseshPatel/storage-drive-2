@@ -2,7 +2,6 @@ import { getTotalSizeUsed } from '@/lib/action/file.action'
 import { getCurrentUser } from '@/lib/action/user.actions'
 import { calculatePercentage } from '@/lib/utils'
 import Image from 'next/image'
-import React, { use } from 'react'
 
 const ProfilePage = async () => {
     const user = await getCurrentUser()

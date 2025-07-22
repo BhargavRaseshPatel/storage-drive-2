@@ -1,22 +1,21 @@
 "use client"
-import Image from 'next/image'
-import React, { useState } from 'react'
 import {
     Sheet,
     SheetContent,
-    SheetDescription,
     SheetHeader,
     SheetTitle,
-    SheetTrigger,
+    SheetTrigger
 } from "@/components/ui/sheet"
-import { usePathname } from 'next/navigation'
-import { Separator } from '@radix-ui/react-separator'
 import { avatarPlaceholderUrl, navItems } from '@/constant'
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
-import { Button } from './ui/button'
-import FileUploader from './FileUploader'
 import { signOutUser } from '@/lib/action/user.actions'
+import { cn } from '@/lib/utils'
+import { Separator } from '@radix-ui/react-separator'
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
+import FileUploader from './FileUploader'
+import { Button } from './ui/button'
 
 interface Props {
     $id: string,

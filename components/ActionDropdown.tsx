@@ -1,14 +1,12 @@
 "use client"
-import React, { useState } from 'react'
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+    DialogTitle
 } from "@/components/ui/dialog"
+import { useState } from 'react'
 
 import {
     DropdownMenu,
@@ -18,18 +16,18 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import Image from 'next/image'
-import { Models } from 'node-appwrite'
 import { actionsDropdownItems } from '@/constant'
-import Link from 'next/link'
-import { constructDownloadUrl } from '@/lib/utils'
-import { Input } from './ui/input'
-import { Button } from './ui/button'
-import { deleteFile, renameFile, updateFileUser } from '@/lib/action/file.action'
-import { usePathname } from 'next/navigation'
-import { FileDetail, ShareInput } from './ActionModalContent'
-import { getUserByEmail } from '@/lib/action/user.actions'
 import { useToast } from '@/hooks/use-toast'
+import { deleteFile, renameFile, updateFileUser } from '@/lib/action/file.action'
+import { getUserByEmail } from '@/lib/action/user.actions'
+import { constructDownloadUrl } from '@/lib/utils'
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Models } from 'node-appwrite'
+import { FileDetail, ShareInput } from './ActionModalContent'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
 
 const ActionDropdown = ({ file, sharedFile }: { file: Models.Document, sharedFile: boolean }) => {
 

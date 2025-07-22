@@ -1,14 +1,14 @@
 "use client"
-import React, { MouseEvent, useCallback, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { Button } from './ui/button'
-import { cn, convertFileSize, convertFileToUrl, getFileType } from '@/lib/utils'
-import Image from 'next/image'
-import Thumbnail from './Thumbnail'
 import { MAX_FILE_SIZE, MAXIMUM_TOTAL_STORAGE } from '@/constant'
 import { useToast } from '@/hooks/use-toast'
-import { usePathname } from 'next/navigation'
 import { getSizeOfAllDocuments, uploadFile } from '@/lib/action/file.action'
+import { cn, convertFileToUrl, getFileType } from '@/lib/utils'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { MouseEvent, useCallback, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import Thumbnail from './Thumbnail'
+import { Button } from './ui/button'
 
 interface Props {
   ownerId: string

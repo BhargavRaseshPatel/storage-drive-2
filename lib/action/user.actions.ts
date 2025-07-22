@@ -1,13 +1,12 @@
 "use server"
 
+import { avatarPlaceholderUrl } from "@/constant"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 import { ID, Query } from "node-appwrite"
 import { createAdminClient, createSessionClient } from "../appwrite"
 import { appWriteConfig } from "../appwrite/config"
 import { parseStringify } from "../utils"
-import { cookies } from "next/headers"
-import { avatarPlaceholderUrl } from "@/constant"
-import { redirect } from "next/navigation"
-import { error } from "console"
 
 const handleError = (error: unknown, message: string) => {
     console.error(error, message)

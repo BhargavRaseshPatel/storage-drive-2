@@ -1,26 +1,24 @@
-import React, { useState } from 'react'
 import {
     AlertDialog,
     AlertDialogAction,
-    AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
+    AlertDialogTrigger
 } from "@/components/ui/alert-dialog"
+import React, { useState } from 'react'
 
 import {
     InputOTP,
     InputOTPGroup,
-    InputOTPSeparator,
-    InputOTPSlot,
+    InputOTPSlot
 } from "@/components/ui/input-otp"
-import Image from 'next/image'
-import { Button } from './ui/button'
 import { sendEmailOTP, verifySecret } from '@/lib/action/user.actions'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { Button } from './ui/button'
 
 
 const OTPModal = ({ accountId, email }: { accountId: string, email: string }) => {

@@ -17,7 +17,7 @@ const page = async ({ searchParams, params }: SearchParamProps) => {
 
     const files = await getFiles({ types, searchText, sort })
 
-    let currentUer = await getCurrentUser()
+    let currentUser = await getCurrentUser()
 
     return (
         <div className='page-container'>
@@ -40,7 +40,7 @@ const page = async ({ searchParams, params }: SearchParamProps) => {
             {files.total > 0 ? (
                 <section key="file-section" className='file-list'>
                     {files.documents.map((file: Models.Document) => (
-                        <Card accountId={currentUer.accountId} key={file.$id} file={file} />
+                        <Card accountId={currentUser.accountId} key={file.$id} file={file} />
                     ))}
                 </section>
             )
