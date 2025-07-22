@@ -17,7 +17,7 @@ const page = async ({ searchParams, params }: SearchParamProps) => {
 
     const files = await getFiles({ types, searchText, sort })
 
-    let currentUser = await getCurrentUser()
+    const currentUser = await getCurrentUser()
 
     return (
         <div className='page-container'>

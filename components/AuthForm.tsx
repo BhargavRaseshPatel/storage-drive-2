@@ -21,10 +21,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import OTPModal from './OTPModal'
 
-const formSchema = z.object({
-    username: z.string().min(2).max(50),
-})
-
 type FormType = "sign-in" | "sign-up"
 
 const authFormSchema = (formType: FormType) => {

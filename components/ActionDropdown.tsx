@@ -33,7 +33,6 @@ const ActionDropdown = ({ file, sharedFile }: { file: Models.Document, sharedFil
 
     const [action, setAction] = useState<ActionType | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [isDropDown, setIsDropDown] = useState(false)
     const [fileName, setFileName] = useState(file.name)
     const [loading, setLoading] = useState(false)
     const [email, setEmail] = useState<string>("")
@@ -43,7 +42,6 @@ const ActionDropdown = ({ file, sharedFile }: { file: Models.Document, sharedFil
 
     const closeAllModals = () => {
         setIsModalOpen(false)
-        setIsDropDown(false)
         setAction(null)
         setFileName(file.name)
         setLoading(false)

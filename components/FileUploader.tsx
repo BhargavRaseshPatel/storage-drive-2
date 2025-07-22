@@ -27,7 +27,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
     setFile(acceptedFiles);
     const uploadPromises = acceptedFiles.map(async (file) => {
       if (file.size > MAX_FILE_SIZE) {
-        setFile((prevFiles) => prevFiles.filter((f: any) => f.name !== file.name))
+        setFile((prevFiles) => prevFiles.filter((f: File) => f.name !== file.name))
 
         return toast({
           description: (<p className='body-2 text-white'><span className='font-semibold'>{file.name}</span> is too large.
@@ -39,7 +39,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
       const totalStorage = await getSizeOfAllDocuments()
 
       if ((totalStorage?.totalSize ?? 0) + file.size > MAXIMUM_TOTAL_STORAGE) {
-        setFile((prevFiles) => prevFiles.filter((f: any) => f.name !== file.name))
+        setFile((prevFiles) => prevFiles.filter((f: File) => f.name !== file.name))
 
         return toast({
           description: (<p className='body-2 text-white'>Adding <span className='font-semibold'>{file.name}</span>
@@ -50,7 +50,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
 
       return uploadFile({ file, ownerId, accountId, path }).then((uploadFile) => {
         if (uploadFile) {
-          setFile((prevFiles) => prevFiles.filter((f: any) => f.name !== file.name))
+            setFile((prevFiles) => prevFiles.filter((f: File) => f.name !== file.name))
         }
       });
     });
@@ -58,7 +58,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
     await Promise.all(uploadPromises);
   }, [ownerId, accountId, path]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+  const { getRootProps, getInputProps } = useDropzone({ onDrop })
 
   const handleRemoveFile = (e: MouseEvent<HTMLImageElement>, fileName: string) => {
     e.stopPropagation()
