@@ -37,7 +37,7 @@ const OTPModal = ({ accountId, email }: { accountId: string, email: string }) =>
             const sessionId = await verifySecret({ accountId, password })
 
             if (sessionId) {
-                router.push('/')
+                router.push('/documents')
             }
             // Call the API to verify the OTP
 
