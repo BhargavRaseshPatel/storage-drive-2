@@ -1,11 +1,10 @@
-import { getTotalSizeUsed } from '@/lib/action/file.action'
-import { getCurrentUser } from '@/lib/action/user.actions'
-import { calculatePercentage } from '@/lib/utils'
-import Image from 'next/image'
+import { getTotalSizeUsed } from '@/lib/action/file.action';
+import { getCurrentUser } from '@/lib/action/user.actions';
+import Image from 'next/image';
 
 const ProfilePage = async () => {
   const user = await getCurrentUser();
-  const { percentageUsed, sizeInBytes } = await getTotalSizeUsed();
+  const { percentageUsed } = await getTotalSizeUsed();
 
   return (
     <div className="page-container">
