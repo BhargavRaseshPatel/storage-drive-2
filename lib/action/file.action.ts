@@ -141,12 +141,14 @@ export const updateFileUser = async ({ fileId, emails, path }: UpdateFileUsersPr
 }
 
 export const getSizeOfAllDocuments = async () => {
-    const { database, account } = await createSessionClient()
+    const { database } = await createAdminClient()
 
     try {
-        const result = await account.get()
+        const  currentUser = await getCurrentUser()
 
-        const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('accountId', [result.$id])])
+        if (!currentUser) throw new Error('User not found')
+
+        const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('owner', [currentUser.$id])])
 
         const allDocumentsSize: DocumentsSizeProps = {
             documents: {
@@ -193,12 +195,14 @@ export const getSizeOfAllDocuments = async () => {
 }
 
 export const getTotalSizeUsed = async () => {
-    const { database, account } = await createSessionClient()
+ const { database } = await createAdminClient()
 
     try {
-        const result = await account.get()
+        const  currentUser = await getCurrentUser()
 
-        const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('accountId', [result.$id])])
+        if (!currentUser) throw new Error('User not found')
+
+        const files = await database.listDocuments(appWriteConfig.databaseId, appWriteConfig.fileCollectionId, [Query.equal('owner', [currentUser.$id])])
 
         const totalSize = files.documents.reduce((accumulator, currentValue) => {
             return accumulator + (currentValue.size || 0)
