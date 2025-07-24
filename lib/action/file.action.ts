@@ -141,81 +141,83 @@ export const updateFileUser = async ({ fileId, emails, path }: UpdateFileUsersPr
 }
 
 export const getSizeOfAllDocuments = async () => {
-  const { database } = await createAdminClient();
+    const { database } = await createAdminClient();
 
-  try {
-    const currentUser = await getCurrentUser();
-    if (!currentUser) throw new Error("User not found");
+    try {
+        const currentUser = await getCurrentUser();
+        if (!currentUser) throw new Error("User not found");
 
-    const files = await database.listDocuments(
-      appWriteConfig.databaseId,
-      appWriteConfig.fileCollectionId,
-      [Query.equal("owner", [currentUser.$id])]
-    );
+        const files = await database.listDocuments(
+            appWriteConfig.databaseId,
+            appWriteConfig.fileCollectionId,
+            [Query.equal("owner", [currentUser.$id])]
+        );
 
-    const allDocumentsSize = {
-      documents: { size: 0, totalItems: 0 },
-      images: { size: 0, totalItems: 0 },
-      media: { size: 0, totalItems: 0 },
-      others: { size: 0, totalItems: 0 },
-      totalSize: 0,
-    };
+        const allDocumentsSize = {
+            documents: { size: 0, totalItems: 0 },
+            images: { size: 0, totalItems: 0 },
+            media: { size: 0, totalItems: 0 },
+            others: { size: 0, totalItems: 0 },
+            totalSize: 0,
+        };
 
-    return files.documents.reduce((accumulator, currentValue) => {
-      if (currentValue.type === "document") {
-        accumulator.documents.size += currentValue.size;
-        accumulator.documents.totalItems += 1;
-      } else if (["video", "audio"].includes(currentValue.type)) {
-        accumulator.media.size += currentValue.size;
-        accumulator.media.totalItems += 1;
-      } else if (currentValue.type === "image") {
-        accumulator.images.size += currentValue.size;
-        accumulator.images.totalItems += 1;
-      } else {
-        accumulator.others.size += currentValue.size;
-        accumulator.others.totalItems += 1;
-      }
-      accumulator.totalSize += currentValue.size;
-      return accumulator;
-    }, allDocumentsSize);
-  } catch (error) {
-    console.log("Error while fetching the data", error);
-    return {
-      documents: { size: 0, totalItems: 0 },
-      images: { size: 0, totalItems: 0 },
-      media: { size: 0, totalItems: 0 },
-      others: { size: 0, totalItems: 0 },
-      totalSize: 0,
-    };
-  }
+        return files.documents.reduce((accumulator, currentValue) => {
+            if (currentValue.type === "document") {
+                accumulator.documents.size += currentValue.size;
+                accumulator.documents.totalItems += 1;
+            } else if (["video", "audio"].includes(currentValue.type)) {
+                accumulator.media.size += currentValue.size;
+                accumulator.media.totalItems += 1;
+            } else if (currentValue.type === "image") {
+                accumulator.images.size += currentValue.size;
+                accumulator.images.totalItems += 1;
+            } else {
+                accumulator.others.size += currentValue.size;
+                accumulator.others.totalItems += 1;
+            }
+            accumulator.totalSize += currentValue.size;
+            return accumulator;
+        }, allDocumentsSize);
+    } catch (error) {
+        console.log("Error while fetching the data", error);
+        return {
+            documents: { size: 0, totalItems: 0 },
+            images: { size: 0, totalItems: 0 },
+            media: { size: 0, totalItems: 0 },
+            others: { size: 0, totalItems: 0 },
+            totalSize: 0,
+        };
+    }
 };
 
-export const getTotalSizeUsed = async () => {
-  const { database } = await createAdminClient();
+export const getTotalSizeUsed = async (): Promise<{
+    percentageUsed: number;
+    sizeInBytes: number;
+}> => {
+    try {
+        const { database } = await createAdminClient();
+        const currentUser = await getCurrentUser();
 
-  try {
-    const currentUser = await getCurrentUser();
-    if (!currentUser) throw new Error('User not found');
+        if (!currentUser) throw new Error("User not found");
 
-    const files = await database.listDocuments(
-      appWriteConfig.databaseId,
-      appWriteConfig.fileCollectionId,
-      [Query.equal('owner', [currentUser.$id])]
-    );
+        const files = await database.listDocuments(
+            appWriteConfig.databaseId,
+            appWriteConfig.fileCollectionId,
+            [Query.equal("owner", [currentUser.$id])]
+        );
 
-    const totalSize = files.documents.reduce((acc, doc) => acc + (doc.size || 0), 0);
+        const totalSize = files.documents.reduce((acc, doc) => acc + (doc.size || 0), 0);
+        const percentageUsed = calculatePercentage(totalSize);
 
-    const percentageUsed = calculatePercentage(totalSize);
-
-    return {
-      percentageUsed, // ✅ number like 35.42
-      sizeInBytes: totalSize // ✅ raw number for formatting if needed
-    };
-  } catch (error) {
-    console.log('Error while fetching the total Size', error);
-    return {
-      percentageUsed: 0,
-      sizeInBytes: 0
-    };
-  }
+        return {
+            percentageUsed,
+            sizeInBytes: totalSize,
+        };
+    } catch (error) {
+        console.error("Error while fetching the total size used:", error);
+        return {
+            percentageUsed: 0,
+            sizeInBytes: 0,
+        };
+    }
 };
