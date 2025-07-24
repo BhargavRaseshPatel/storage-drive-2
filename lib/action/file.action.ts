@@ -1,6 +1,6 @@
 "use server"
 import { InputFile } from "node-appwrite/file"
-import { createAdminClient, createSessionClient } from "../appwrite"
+import { createAdminClient } from "../appwrite"
 import { appWriteConfig } from "../appwrite/config"
 import { ID, Models, Query } from "node-appwrite"
 import { constructFileUrl, convertFileSize, getFileType, parseStringify } from "../utils"
