@@ -74,11 +74,10 @@ export const verifySecret = async ({ accountId, password }: { accountId: string,
 }
 
 export const getCurrentUser = async () => {
-  const { database, account } = await createSessionClient();
-
   try {
-    const result = await account.get(); // could throw!
-    console.log("✅ Account found", result);
+    const { database, account } = await createSessionClient();
+
+    const result = await account.get();
 
     const user = await database.listDocuments(
       appWriteConfig.databaseId,
@@ -86,17 +85,15 @@ export const getCurrentUser = async () => {
       [Query.equal("accountId", [result.$id])]
     );
 
-    if (user.total === 0) {
-      console.warn("⚠️ No user found in DB for account ID");
-      return null;
-    }
+    if (user.total === 0) return null;
 
     return parseStringify(user.documents[0]);
-  } catch (err) {
-    console.error("❌ Error in getCurrentUser", err);
-    return null;
+  } catch (error) {
+    console.error("getCurrentUser failed", error);
+    return null; // ✅ Safe return, won’t crash production
   }
 };
+
 
 
 export const signOutUser = async () => {
