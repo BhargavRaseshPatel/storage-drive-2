@@ -190,34 +190,39 @@ export const getSizeOfAllDocuments = async () => {
     }
 };
 
-export const getTotalSizeUsed = async (): Promise<{
-    percentageUsed: number;
-    sizeInBytes: number;
-}> => {
-    try {
-        const { database } = await createAdminClient();
-        const currentUser = await getCurrentUser();
+export const getTotalSizeUsed = async () => {
+  try {
+    const { database } = await createAdminClient();
+    const currentUser = await getCurrentUser();
 
-        if (!currentUser) throw new Error("User not found");
+    if (!currentUser) throw new Error("User not found");
 
-        const files = await database.listDocuments(
-            appWriteConfig.databaseId,
-            appWriteConfig.fileCollectionId,
-            [Query.equal("owner", [currentUser.$id])]
-        );
+    const files = await database.listDocuments(
+      appWriteConfig.databaseId,
+      appWriteConfig.fileCollectionId,
+      [Query.equal("owner", [currentUser.$id])]
+    );
 
-        const totalSize = files.documents.reduce((acc, doc) => acc + (doc.size || 0), 0);
-        const percentageUsed = calculatePercentage(totalSize);
-
-        return {
-            percentageUsed,
-            sizeInBytes: totalSize,
-        };
-    } catch (error) {
-        console.error("Error while fetching the total size used:", error);
-        return {
-            percentageUsed: 0,
-            sizeInBytes: 0,
-        };
+    let totalSize = 0;
+    for (const doc of files.documents) {
+      if (typeof doc.size === "number") {
+        totalSize += doc.size;
+      } else {
+        console.warn("Missing or invalid size in doc:", doc);
+      }
     }
+
+    const percentageUsed = calculatePercentage(totalSize);
+
+    return {
+      percentageUsed,
+      sizeInBytes: totalSize,
+    };
+  } catch (error) {
+    console.error("Error while fetching the total size used:", error);
+    return {
+      percentageUsed: 0,
+      sizeInBytes: 0,
+    };
+  }
 };
