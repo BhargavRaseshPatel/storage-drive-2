@@ -52,7 +52,7 @@ const MobileNavigation = ({ $id: ownerId, accountId, fullName, email }: Props) =
                         <nav className='mobile-nav'>
                             <ul className='mobile-nav-list'>
                                 {navItems.map(({ url, name, icon }) => (
-                                    <Link key={name} href={url} className='lg:w-full'>
+                                    <Link key={name} href={name != 'Profile' ? url : '#'} className='lg:w-full'>
                                         <li className={cn('mobile-nav-item', (pathname === url && 'shad-active'))}>
                                             <Image src={icon} alt={name} width={24} height={24} className={cn('nav-icon', pathname === url && 'nav-icon-active')} />
                                             <p>{name}</p>
