@@ -1,4 +1,4 @@
-import { dashboardFiles } from "@/constant";
+import { dashboardFiles, MAXIMUM_TOTAL_STORAGE } from "@/constant";
 import { getSizeOfAllDocuments } from "@/lib/action/file.action";
 import { calculatePercentage, convertFileSize } from "@/lib/utils";
 import Image from "next/image";
@@ -50,18 +50,26 @@ export default async function Home() {
             height={250}
             series={[
               {
-                data: [
-                  { id: 1, value: spaceUsed, label: "Space Used" },
-                  { id: 2, value: spaceAvailable, label: "Space Available" },
-                ],
-                innerRadius: 25,
-                outerRadius: 100,
-                paddingAngle: 2,
-                cornerRadius: 5,
-                startAngle: -90,
-                endAngle: 270,
-                cx: 125,
-                cy: 100,
+          data: [
+            { 
+              id: 1, 
+              value: spaceUsed, 
+              label: `Space Used (${convertFileSize(storageInformation.totalSize)})` 
+            },
+            { 
+              id: 2, 
+              value: spaceAvailable,
+              label: `Space Avail. (${convertFileSize(MAXIMUM_TOTAL_STORAGE - storageInformation.totalSize)})` 
+            },
+          ],
+          innerRadius: 25,
+          outerRadius: 100,
+          paddingAngle: 2,
+          cornerRadius: 5,
+          startAngle: -90,
+          endAngle: 270,
+          cx: 125,
+          cy: 100,
               },
             ]}
           />
