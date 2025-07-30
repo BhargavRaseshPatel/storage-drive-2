@@ -34,3 +34,5 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+This project is a simple yet powerful web-based storage system that allows users to upload and manage their files and folders online. Users can select multiple files or an entire folder from their local device and upload them securely to the system. Once uploaded, all items are displayed in an organized list or grid view, allowing users to visually confirm the successful upload and access their stored content anytime.
