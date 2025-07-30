@@ -47,3 +47,4 @@ Smart assistance using Gemini AI (e.g., suggestions, categorization, or file des
 Integration with YouTube API for media insights or previews.
 Backend powered by Neon.tech for database operations.
 Built using Next.js and styled with Tailwind CSS and shadcn/ui components.
+ABC
