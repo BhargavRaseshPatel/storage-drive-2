@@ -36,3 +36,11 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 This project is a simple yet powerful web-based storage system that allows users to upload and manage their files and folders online. Users can select multiple files or an entire folder from their local device and upload them securely to the system. Once uploaded, all items are displayed in an organized list or grid view, allowing users to visually confirm the successful upload and access their stored content anytime.
+
+
+Core Features:
+
+	Upload individual files or complete folders.
+	Display a list of uploaded files/folders with their names and sizes.
+	Real-time progress indicator during upload.
+	Responsive and user-friendly interface.
