@@ -35,12 +35,15 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-This project is a simple yet powerful web-based storage system that allows users to upload and manage their files and folders online. Users can select multiple files or an entire folder from their local device and upload them securely to the system. Once uploaded, all items are displayed in an organized list or grid view, allowing users to visually confirm the successful upload and access their stored content anytime.
+This project is a modern cloud storage system built with Next.js and Tailwind CSS, allowing users to upload files and folders and instantly view uploaded items in a sleek, responsive interface. Leveraging advanced tools like shadcn/ui for elegant components, Gemini for smart AI features, and Neon.tech for scalable Postgres storage, the system ensures fast, secure, and intelligent file handling.
 
+Additionally, it integrates the YouTube API to support media-related functionalities (e.g., previewing video content, metadata fetching, or learning resources).
 
-Core Features:
+Key Features:
 
-	Upload individual files or complete folders.
-	Display a list of uploaded files/folders with their names and sizes.
-	Real-time progress indicator during upload.
-	Responsive and user-friendly interface.
+	Upload and preview files and folders with a clean UI.
+	Display uploaded content in a structured and interactive layout.
+	Smart assistance using Gemini AI (e.g., suggestions, categorization, or file description generation).
+	Integration with YouTube API for media insights or previews.
+	Backend powered by Neon.tech for database operations.
+	Built using Next.js and styled with Tailwind CSS and shadcn/ui components.
