@@ -1,5 +1,7 @@
 # ✨ Store My Data – File Storage Dashboard ✨
 
+![Store My Data Banner](./public/assets/images/Gemini_Generated_Image.png)
+
 A modern file management web application that allows users to upload, organize, and manage their personal data such as documents, images, and media files.
 
 🌐 **Live Application:** https://store-my-data.com/
