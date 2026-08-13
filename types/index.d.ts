@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-declare type FileType = 'document' | 'image' | 'video' | 'audio' | 'other';
+declare type FileType = 'document' | 'image' | 'video' | 'audio' | 'other' | 'shared';
 
 declare interface ActionType {
   label: string;

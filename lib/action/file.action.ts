@@ -48,21 +48,21 @@ export const uploadFile = async ({ file, ownerId, accountId, path }: UploadFileP
 
 const createQueries = (currentUser: Models.Document, types: string[], searchText: string, sort: string, limit?: number) => {
     const queries = []
-    if (types.includes("shared")) {
-        queries.push(Query.contains('users', [currentUser.email]))
-    } else {
-        queries.push(Query.equal('owner', [currentUser.$id]))
+
+    queries.push(Query.equal('owner', [currentUser.$id]))
+
+    if (!types.includes("shared")) {
         if (types.length > 0) queries.push(Query.equal('type', types))
     }
-    // const queries = [Query.or([),]]
 
     if (searchText) queries.push(Query.contains('name', searchText))
-    if (limit) queries.push(Query.limit(limit))
+    if (limit && !types.includes("shared")) queries.push(Query.limit(limit))
 
     if (sort) {
         const [sortBy, orderBy] = sort.split('-')
         queries.push(orderBy === 'asc' ? Query.orderAsc(sortBy) : Query.orderDesc(sortBy))
     }
+
     return queries
 }
 
@@ -81,13 +81,35 @@ export const getFiles = async ({ types = [], searchText = '', sort = '$createdAt
             appWriteConfig.fileCollectionId,
             queries
         )
-        let size = 0;
 
-        (files.documents.forEach((element) => size += element.size))
+        let filteredDocuments = files.documents
+
+        if (types.includes("shared")) {
+            filteredDocuments = files.documents.filter((file) => {
+                const users = file.users as string[] 
+
+                return (
+                    // Array.isArray(users) &&
+                    users.length > 0 
+                    // &&
+                    // !users.includes(currentUser.email)
+                )
+            })
+
+            if (limit) filteredDocuments = filteredDocuments.slice(0, limit)
+        }
+
+        let size = 0
+
+        filteredDocuments.forEach((element) => size += element.size || 0)
+
         const totalSize = convertFileSize(size)
 
-        return parseStringify({ ...files, totalSize })
-
+        return parseStringify({
+            ...files,
+            documents: filteredDocuments,
+            totalSize
+        })
     } catch (error) {
         handleError(error, 'Failed to get files')
     }
@@ -178,6 +200,7 @@ export const getSizeOfAllDocuments = async () => {
             accumulator.totalSize += currentValue.size;
             return accumulator;
         }, allDocumentsSize);
+
     } catch (error) {
         console.log("Error while fetching the data", error);
         return {
@@ -191,38 +214,40 @@ export const getSizeOfAllDocuments = async () => {
 };
 
 export const getTotalSizeUsed = async () => {
-  try {
-    const { database } = await createAdminClient();
-    const currentUser = await getCurrentUser();
+    try {
+        const { database } = await createAdminClient();
+        const currentUser = await getCurrentUser();
 
-    if (!currentUser) throw new Error("User not found");
+        if (!currentUser) throw new Error("User not found");
 
-    const files = await database.listDocuments(
-      appWriteConfig.databaseId,
-      appWriteConfig.fileCollectionId,
-      [Query.equal("owner", [currentUser.$id])]
-    );
+        const files = await database.listDocuments(
+            appWriteConfig.databaseId,
+            appWriteConfig.fileCollectionId,
+            [Query.equal("owner", [currentUser.$id])]
+        );
 
-    let totalSize = 0;
-    for (const doc of files.documents) {
-      if (typeof doc.size === "number") {
-        totalSize += doc.size;
-      } else {
-        console.warn("Missing or invalid size in doc:", doc);
-      }
+        let totalSize = 0;
+        for (const doc of files.documents) {
+            if (typeof doc.size === "number") {
+                totalSize += doc.size;
+            } else {
+                console.warn("Missing or invalid size in doc:", doc);
+            }
+        }
+
+        const percentageUsed = calculatePercentage(totalSize);
+        const precentageRemaining = parseFloat((100 - percentageUsed).toFixed(2));
+
+        return {
+            percentageUsed,
+            sizeInBytes: totalSize,
+            precentageRemaining
+        };
+    } catch (error) {
+        console.error("Error while fetching the total size used:", error);
+        return parseStringify({
+            percentageUsed: 0,
+            sizeInBytes: 0,
+        });
     }
-
-    const percentageUsed = calculatePercentage(totalSize);
-
-    return {
-      percentageUsed,
-      sizeInBytes: totalSize,
-    };
-  } catch (error) {
-    console.error("Error while fetching the total size used:", error);
-    return {
-      percentageUsed: 0,
-      sizeInBytes: 0,
-    };
-  }
 };

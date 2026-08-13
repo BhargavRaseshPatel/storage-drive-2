@@ -31,15 +31,12 @@ const OTPModal = ({ accountId, email }: { accountId: string, email: string }) =>
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         setIsLoading(true)
-
-        // console.log({accountId, password})
         try {
             const sessionId = await verifySecret({ accountId, password })
 
             if (sessionId) {
                 router.push('/')
             }
-            // Call the API to verify the OTP
 
         } catch (error) {
             console.log("Failed to verify OTP", error)
@@ -55,7 +52,7 @@ const OTPModal = ({ accountId, email }: { accountId: string, email: string }) =>
 
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-            <AlertDialogTrigger>Open</AlertDialogTrigger>
+            {/* <AlertDialogTrigger>Open</AlertDialogTrigger> */}
             <AlertDialogContent className='shad-alert-dialog'>
                 <AlertDialogHeader className='relative flex justify-center'>
                     <AlertDialogTitle className='h2 text-center'>Enter your OTP?
