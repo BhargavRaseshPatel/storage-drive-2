@@ -7,6 +7,10 @@ import { getCurrentUser } from '@/lib/action/user.actions'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
+// Every page in this group reads the `appwrite-session` cookie, so none of them
+// can be prerendered at build time.
+export const dynamic = 'force-dynamic'
+
 const Layout = async ({ children }: { children: React.ReactNode }) => {
     let currentUser = null;
     try {
