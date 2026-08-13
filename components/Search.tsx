@@ -31,16 +31,16 @@ const Search = () => {
       if (debounceQuery.length === 0) {
         setResults([])
         setOpen(false)
-        return router.push(path.replace(searchParams.toString(), ''))
+        return router.push(path)
       }
 
-      const files = await getFiles({ types: [], searchText: query })
+      const files = await getFiles({ types: [], searchText: debounceQuery })
 
       setResults(files.documents)
       setOpen(true)
     }
     fetchFile()
-  }, [debounceQuery])
+  }, [debounceQuery, path, router])
 
   const handleClickItem = (file: Models.Document) => {
     setOpen(false)
