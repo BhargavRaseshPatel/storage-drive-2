@@ -4,8 +4,6 @@ import { calculatePercentage, convertFileSize } from "@/lib/utils";
 import Image from "next/image";
 import { PieChart } from "@mui/x-charts/PieChart";
 
-export const dynamic = "force-dynamic"; // optional if you want to disable caching
-
 type FileCategory = "documents" | "images" | "media" | "others";
 
 export default async function Home() {
