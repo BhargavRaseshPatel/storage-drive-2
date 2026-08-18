@@ -2,7 +2,7 @@ export const navItems = [
   {
     name: 'Dashboard',
     icon: '/assets/icons/dashboard.svg',
-    url: '/',
+    url: '/dashboard',
   },
   {
     name: 'Documents',
